@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h1>FusionAI</h1>
+                </div>
+                <nav class="nav">
+                    <a href="/" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2 class="hero-title">
+                    Unleash the Power of 
+                    <span class="gradient-text">Multiple AI Models</span>
+                </h2>
+                <p class="hero-description">
+                    Access cutting-edge AI models including GPT-5, image generation, and code assistance 
+                    all in one unified platform powered by Azure AI Foundry.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <i class="fas fa-brain"></i>
+                        <span class="stat-number"><%= models.length %></span>
+                        <span class="stat-label">AI Models</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-lightning-bolt"></i>
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Uptime</span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-users"></i>
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">Users</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-cards">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-comments"></i>
+                        <span>Chat</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-image"></i>
+                        <span>Generate</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-code"></i>
+                        <span>Code</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Models Section -->
+        <section class="models-section" id="models">
+            <div class="section-header">
+                <h2 class="section-title">Choose Your AI Model</h2>
+                <p class="section-description">
+                    Select from our collection of state-of-the-art AI models to accomplish your tasks
+                </p>
+            </div>
+            
+            <div class="models-grid">
+                <% models.forEach(function(model) { %>
+                <div class="model-card" data-model="<%= model.id %>">
+                    <div class="model-header">
+                        <div class="model-icon">
+                            <i class="<%= model.icon %>"></i>
+                        </div>
+                        <div class="model-status">
+                            <span class="status-indicator <%= model.status === 'online' ? 'online' : 'offline' %>"></span>
+                            <span class="status-text"><%= model.status === 'online' ? 'Online' : 'Offline' %></span>
+                        </div>
+                    </div>
+                    
+                    <div class="model-content">
+                        <h3 class="model-name"><%= model.name %></h3>
+                        <p class="model-description"><%= model.description %></p>
+                        
+                        <div class="model-features">
+                            <h4>Capabilities:</h4>
+                            <ul>
+                                <% model.capabilities.forEach(function(capability) { %>
+                                <li><i class="fas fa-check"></i> <%= capability.charAt(0).toUpperCase() + capability.slice(1).replace('-', ' ') %></li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="model-actions">
+                        <% if (model.status === 'online') { %>
+                        <button class="btn btn-primary try-model" data-model-id="<%= model.id %>">
+                            <i class="fas fa-play"></i>
+                            Try Now
+                        </button>
+                        <% } else { %>
+                        <button class="btn btn-disabled" disabled>
+                            <i class="fas fa-pause"></i>
+                            Offline
+                        </button>
+                        <% } %>
+                        <button class="btn btn-secondary learn-more">
+                            <i class="fas fa-info-circle"></i>
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section" id="features">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose FusionAI?</h2>
+                <p class="section-description">
+                    Built on Azure AI Foundry for enterprise-grade reliability and performance
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Enterprise Security</h3>
+                    <p>Your data is protected with enterprise-grade security and privacy controls.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>High Performance</h3>
+                    <p>Optimized for speed and reliability with 99.9% uptime guarantee.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Easy Integration</h3>
+                    <p>Simple API integration with comprehensive documentation and support.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics & Insights</h3>
+                    <p>Track usage patterns and optimize your AI workflows with detailed analytics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-robot"></i>
+                        <span>FusionAI</span>
+                    </div>
+                    <p>Empowering creativity and productivity through multiple AI models</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>AI Models</h4>
+                    <ul>
+                        <li><a href="/chat/gpt-5">GPT-5 Chat</a></li>
+                        <li><a href="/chat/deepseek">DeepSeek Chat</a></li>
+                        <li><a href="/chat/image-gen">Image Generation</a></li>
+                        <li><a href="/health">System Status</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="/api/config-check">API Status</a></li>
+                        <li><a href="/health">Health Check</a></li>
+                        <li><a href="https://github.com/your-repo" target="_blank">Documentation</a></li>
+                        <li><a href="mailto:support@fusionai.com">Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>About</h4>
+                    <ul>
+                        <li><a href="#about">About FusionAI</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a></li>
+                        <li><a href="#" onclick="showTerms()">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 FusionAI. All rights reserved. Powered by Azure OpenAI, DeepSeek, and other leading AI providers.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

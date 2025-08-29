@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/chat.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="header-content">
+                <div class="model-info">
+                    <a href="/" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <div class="model-details">
+                        <h1><%= model.name %></h1>
+                        <p class="model-description"><%= model.description %></p>
+                        <div class="model-capabilities">
+                            <% if (model.capabilities && model.capabilities.includes('file-upload')) { %>
+                                <span class="capability"><i class="fas fa-file"></i> File Upload</span>
+                            <% } %>
+                            <% if (model.capabilities && model.capabilities.includes('screenshot')) { %>
+                                <span class="capability"><i class="fas fa-camera"></i> Screenshots</span>
+                            <% } %>
+                            <% if (model.capabilities && model.capabilities.includes('text-to-image')) { %>
+                                <span class="capability"><i class="fas fa-image"></i> Image Generation</span>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="action-btn" id="clearChat" title="Clear Chat">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="action-btn" id="exportChat" title="Export Chat">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="action-btn" id="settingsBtn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <main class="chat-main">
+            <div class="chat-container" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="message assistant-message welcome-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-sender"><%= model.name %></span>
+                            <span class="message-time">Now</span>
+                        </div>
+                        <div class="message-text">
+                            <div class="welcome-content">
+                                <h3>Hello! I'm <%= model.name %></h3>
+                                <p><%= model.description %></p>
+                                <% if (model.capabilities && model.capabilities.length > 0) { %>
+                                    <div class="capabilities-list">
+                                        <h4>What I can help with:</h4>
+                                        <ul>
+                                            <% if (model.capabilities.includes('text')) { %>
+                                                <li><i class="fas fa-comments"></i> Text conversations and Q&A</li>
+                                            <% } %>
+                                            <% if (model.capabilities.includes('file-upload')) { %>
+                                                <li><i class="fas fa-file"></i> Analyze uploaded documents and images</li>
+                                            <% } %>
+                                            <% if (model.capabilities.includes('screenshot')) { %>
+                                                <li><i class="fas fa-camera"></i> Analyze screenshots and images</li>
+                                            <% } %>
+                                            <% if (model.capabilities.includes('text-to-image')) { %>
+                                                <li><i class="fas fa-image"></i> Generate images from descriptions</li>
+                                            <% } %>
+                                        </ul>
+                                    </div>
+                                <% } %>
+                                <p class="get-started">How can I help you today?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Typing Indicator -->
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="typing-content">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="typing-text"><%= model.name %> is typing...</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Input Area -->
+        <footer class="chat-input-area">
+            <!-- File Preview -->
+            <div class="file-preview" id="file-preview"></div>
+            
+            <!-- Input Container -->
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <!-- File Upload Controls -->
+                    <div class="file-controls">
+                        <% if (model.capabilities && model.capabilities.includes('file-upload')) { %>
+                            <button type="button" id="attachBtn" class="file-btn" title="Upload file (Max: <%= maxFileSize %>)">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                        <% } %>
+                        <% if (model.capabilities && model.capabilities.includes('screenshot')) { %>
+                            <button type="button" id="screenshotBtn" class="file-btn" title="Take screenshot">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Message Input -->
+                    <div class="message-input-wrapper">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Type your message... (Ctrl+Enter to send, paste images directly)"
+                            maxlength="5000"
+                            rows="1"
+                        ></textarea>
+                        <div class="input-actions">
+                            <span class="char-count">0/5000</span>
+                            <button type="button" id="sendBtn" class="send-button" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Help Text -->
+                <div class="input-help">
+                    <div class="help-text">
+                        <% if (model.capabilities && (model.capabilities.includes('file-upload') || model.capabilities.includes('screenshot'))) { %>
+                            <span><i class="fas fa-info-circle"></i> 
+                                You can drag & drop files, paste images, or use the upload buttons
+                            </span>
+                        <% } else { %>
+                            <span><i class="fas fa-info-circle"></i> 
+                                Press Enter to send, Shift+Enter for new line
+                            </span>
+                        <% } %>
+                    </div>
+                    <div class="keyboard-shortcuts">
+                        <span>Ctrl+K: Focus input</span>
+                        <span>Ctrl+L: Clear chat</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chat Settings</h2>
+                <button class="close-btn" id="closeSettings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label for="temperature">Creativity (Temperature)</label>
+                    <div class="setting-control">
+                        <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                        <span class="setting-value">0.7</span>
+                    </div>
+                    <small>Higher values make responses more creative but less focused</small>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="maxTokens">Max Response Length</label>
+                    <div class="setting-control">
+                        <input type="range" id="maxTokens" min="100" max="<%= model.maxTokens || 4096 %>" step="100" value="<%= model.maxTokens || 1000 %>">
+                        <span class="setting-value"><%= model.maxTokens || 1000 %></span>
+                    </div>
+                    <small>Maximum length of the AI response</small>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="systemPrompt">System Instructions</label>
+                    <textarea id="systemPrompt" placeholder="Custom instructions for the AI..." rows="3"></textarea>
+                    <small>Custom instructions to guide the AI's behavior</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="resetSettings">Reset to Default</button>
+                <button class="btn btn-primary" id="saveSettings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" style="display: none;" accept="image/*,text/*,.pdf,.doc,.docx,.json,.csv" />
+
+    <!-- Scripts -->
+    <script>
+        // Pass model data to JavaScript
+        window.modelData = <%- modelDataJson %>;
+        window.maxFileSize = '<%= maxFileSize %>';
+    </script>
+    <script src="/js/chat.js"></script>
+</body>
+</html>
